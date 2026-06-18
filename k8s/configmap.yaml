@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+  namespace: webapp
+data:
+  NODE_ENV:      "production"
+  PORT:          "3001"
+  APP_VERSION:   "2.0.0"
+  PLATFORM_NAME: "AKS"
+  DB_PORT:       "5432"
+  DB_NAME:       "sredb"
+  DB_USER:       "sreuser"
+  LOG_LEVEL:     "info"
+  CORS_ORIGIN:   "*"
+  # DB_HOST is patched at deploy time from Terraform PostgreSQL output

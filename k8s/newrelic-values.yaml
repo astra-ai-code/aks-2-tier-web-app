@@ -1,0 +1,25 @@
+global:
+  # cluster and licenseKey are set via --set in the deploy script
+  lowDataMode: true
+
+newrelic-infrastructure:
+  enabled: true
+
+nri-kube-events:
+  enabled: true
+
+kube-state-metrics:
+  enabled: true
+
+newrelic-logging:
+  enabled: true
+
+nri-prometheus:
+  enabled: true
+
+# Not needed for this setup — skip to save resources
+newrelic-pixie:
+  enabled: false
+
+pixie-chart:
+  enabled: false

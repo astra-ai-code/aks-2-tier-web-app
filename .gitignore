@@ -1,0 +1,15 @@
+# Terraform
+terraform/.terraform/
+terraform/terraform.tfstate
+terraform/terraform.tfstate.backup
+terraform/.terraform.lock.hcl
+
+# Node
+node_modules/
+npm-debug.log*
+
+# Build artifacts
+frontend/build/
+
+# Temp/generated files
+scripts/nr-dashboard-update.json
