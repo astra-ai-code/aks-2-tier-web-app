@@ -165,6 +165,7 @@ export default function App() {
   const [services, setServices]   = useState([]);
   const [incidents, setIncidents] = useState([]);
   const [loading, setLoading]     = useState(true);
+  const [error, setError]         = useState(null);
   const [toast, setToast]         = useState(null);
   const [platform, setPlatform]   = useState(null);
 
@@ -181,6 +182,7 @@ export default function App() {
 
   const loadAll = useCallback(async () => {
     try {
+      setError(null);
       const [dash, svcs, incs, health] = await Promise.all([
         api('/api/dashboard'),
         api('/api/services'),
@@ -193,6 +195,7 @@ export default function App() {
       if (health.platform) setPlatform(health.platform);
     } catch (e) {
       const msg = e.reqId ? `${e.message} (req: ${e.reqId.slice(0,8)})` : e.message;
+      setError({ message: e.message, reqId: e.reqId || 'unknown', timestamp: new Date().toISOString() });
       notify(msg, 'error');
     } finally {
       setLoading(false);
@@ -301,6 +304,23 @@ export default function App() {
           </div>
         ) : (
           <>
+            {/* ── Error Banner ── */}
+            {error && (
+              <div className="error-banner">
+                <div className="error-banner-icon">&#9888;</div>
+                <div className="error-banner-content">
+                  <h3>Application Error</h3>
+                  <p className="error-banner-msg">{error.message}</p>
+                  <div className="error-banner-meta">
+                    <span>Request ID: <code>{error.reqId}</code></span>
+                    <span>Time: {error.timestamp}</span>
+                  </div>
+                  <p className="error-banner-hint">Check backend logs and New Relic for full stack trace. This error is blocking data loading.</p>
+                </div>
+                <button className="btn btn-sm btn-ghost" onClick={loadAll}>Retry</button>
+              </div>
+            )}
+
             {/* ── Dashboard ── */}
             {tab === 'dashboard' && dashboard && (
               <div className="page">

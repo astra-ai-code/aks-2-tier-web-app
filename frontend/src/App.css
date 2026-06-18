@@ -185,3 +185,13 @@ input, select, textarea { font-family: inherit; font-size: 14px; }
   .form-grid { grid-template-columns: 1fr; }
   .topbar-nav .nav-btn { padding: 6px 10px; }
 }
+
+/* ── Error Banner ──────────────────────────────────────────────────────────── */
+.error-banner { display: flex; align-items: flex-start; gap: 16px; background: #2d1215; border: 1px solid #f8717140; border-left: 4px solid #f87171; border-radius: 8px; padding: 20px 24px; margin: 20px; }
+.error-banner-icon { font-size: 28px; color: #f87171; flex-shrink: 0; line-height: 1; }
+.error-banner-content { flex: 1; }
+.error-banner-content h3 { color: #f87171; font-size: 16px; margin-bottom: 6px; }
+.error-banner-msg { color: #fca5a5; font-size: 14px; font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace; background: #1a0a0c; padding: 8px 12px; border-radius: 4px; margin: 8px 0; word-break: break-all; }
+.error-banner-meta { display: flex; gap: 20px; font-size: 12px; color: #94a3b8; margin: 8px 0; }
+.error-banner-meta code { color: #fbbf24; background: #1e1b1b; padding: 1px 6px; border-radius: 3px; font-size: 11px; }
+.error-banner-hint { font-size: 12px; color: #78716c; margin-top: 8px; font-style: italic; }
