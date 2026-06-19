@@ -4,7 +4,7 @@ metadata:
   name: app-config
   namespace: webapp
 data:
-  NODE_ENV:      "production"
+  NODE_ENV: "production"
   PORT:          "3001"
   APP_VERSION:   "2.0.0"
   PLATFORM_NAME: "AKS"
