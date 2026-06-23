@@ -105,6 +105,23 @@ async function dbQuery(operation, queryText, values) {
   }
 }
 
+async function ensureServiceMetricsTable() {
+  try {
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS service_metrics (
+        id             SERIAL PRIMARY KEY,
+        service_id     INT REFERENCES services(id) ON DELETE CASCADE,
+        response_time_ms NUMERIC(10,2) NOT NULL,
+        status_code    INT NOT NULL,
+        recorded_at    TIMESTAMPTZ DEFAULT NOW()
+      )
+    `);
+  } catch (err) {
+    logger.error({ err: err.message }, 'Failed to create service_metrics table');
+    throw err;
+  }
+}
+
 async function initDB(retries = 10, delayMs = 3000) {
   for (let i = 1; i <= retries; i++) {
     try {
@@ -132,6 +149,7 @@ async function initDB(retries = 10, delayMs = 3000) {
           resolved_at TIMESTAMPTZ
         )
       `);
+      await ensureServiceMetricsTable();
       const { rows } = await pool.query('SELECT COUNT(*) FROM services');
       if (parseInt(rows[0].count) === 0) {
         await pool.query(`
