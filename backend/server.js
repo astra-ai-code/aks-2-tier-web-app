@@ -385,9 +385,25 @@ app.get('/api/incidents', async (req, res) => {
     if (severity)   { params.push(severity);   q += ` AND i.severity = $${params.length}`; }
     q += ' ORDER BY i.created_at DESC';
     const result = await dbQuery('list_incidents', q, params);
-    res.json(result.rows);
+
+    // Enrich incidents with SLA compliance tracking
+    const slaConfig = JSON.parse(process.env.SLA_CONFIG || 'null');
+    const enriched = result.rows.map(incident => {
+      const targetHours = slaConfig.targets[incident.severity];
+      const elapsedHours = (Date.now() - new Date(incident.created_at).getTime()) / 3600000;
+      return {
+        ...incident,
+        sla_target_hours: targetHours,
+        sla_elapsed_hours: Math.round(elapsedHours * 10) / 10,
+        sla_status: incident.status === 'resolved' ? 'met'
+                  : elapsedHours <= targetHours ? 'on_track' : 'breached',
+      };
+    });
+
+    res.json(enriched);
   } catch (err) {
-    res.status(500).json({ error: err.message, req_id: req.reqId });
+    logger.error({ err: err.message, stack: err.stack, req_id: req.reqId }, 'Incidents query failed');
+    res.status(500).json({ error: `Incidents query failed: ${err.message}`, req_id: req.reqId });
   }
 });
 
