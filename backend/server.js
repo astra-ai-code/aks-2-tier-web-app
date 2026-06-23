@@ -109,6 +109,19 @@ async function initDB(retries = 10, delayMs = 3000) {
   for (let i = 1; i <= retries; i++) {
     try {
       await pool.query(`
+        CREATE TABLE IF NOT EXISTS service_metrics (
+          id             SERIAL PRIMARY KEY,
+          service_id     INT REFERENCES services(id) ON DELETE CASCADE,
+          response_time_ms NUMERIC(10,2) NOT NULL,
+          status_code    INT NOT NULL,
+          endpoint       VARCHAR(500),
+          recorded_at    TIMESTAMPTZ DEFAULT NOW(),
+          INDEX idx_service_metrics_recorded (service_id, recorded_at)
+        )
+      `);
+      await pool.query(`CREATE INDEX IF NOT EXISTS idx_service_metrics_recorded ON service_metrics(service_id, recorded_at)`);
+
+      await pool.query(`
         CREATE TABLE IF NOT EXISTS services (
           id           SERIAL PRIMARY KEY,
           name         VARCHAR(100) NOT NULL,
